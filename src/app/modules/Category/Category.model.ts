@@ -18,6 +18,18 @@ CategorySchema.pre("save", function (next) {
   next();
 });
 
+
+CategorySchema.pre("findOneAndUpdate", async function (next) {
+	const update = this.getUpdate() as Partial<TCategory>;
+	if (update.name) {
+		update.slug = generateSlug(update.name);
+		this.setUpdate(update);
+	}
+	next();
+});
+
+
+
 const Category = model<TCategory>("Category", CategorySchema);
 
 export default Category;
