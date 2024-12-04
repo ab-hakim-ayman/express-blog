@@ -1,14 +1,15 @@
-// import express from "express";
+import express from "express";
+import CategoryRoutes from "../modules/Category/Category.routes";
 
-// const router = express.Router();
+const router = express.Router();
 
-// const moduleRoutes = [
-//   {
-//     path: "/users",
-//     route: UserRoutes,
-//   },
-// ];
+const moduleRoutes = [
+  {
+    path: "/categories",
+    route: CategoryRoutes,
+  },
+];
 
-// moduleRoutes.forEach((route) => router.use(route.path, route.route));
+moduleRoutes.forEach((route) => router.use(route.path, route.route));
 
-// export default router;
+export default router;
