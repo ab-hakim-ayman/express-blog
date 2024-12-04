@@ -7,7 +7,6 @@ import CategoryValidation from "./Category.validations";
 const router = express.Router();
 
 // all routes start with /api/categories. all routes are protected and only an admin can access them.
-
 router.post(
   "/",
   adminAuth(),
