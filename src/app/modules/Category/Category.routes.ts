@@ -27,4 +27,3 @@ router.delete("/:id", adminAuth(), CategoryControllers.DeleteCategoryById);
 const CategoryRoutes = router;
 
 export default CategoryRoutes;
-

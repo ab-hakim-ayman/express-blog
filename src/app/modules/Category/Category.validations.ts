@@ -16,5 +16,4 @@ const CategoryValidation = z.object({
   }),
 });
 
-
 export default CategoryValidation;
