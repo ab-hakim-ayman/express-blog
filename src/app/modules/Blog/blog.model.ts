@@ -1,9 +1,10 @@
 import httpStatus from "http-status";
 import { Schema, model } from "mongoose";
 import AppError from "../../errors/AppError";
-import { TBlog, BlogModel } from "./blog.interfaces";
+import generateSlug from "../../utils/generateSlug";
+import { BlogModel, TBlog, TImage } from "./blog.interfaces";
 
-const imageSchema = new Schema(
+const imageSchema = new Schema<TImage>(
   {
     url: { type: String, required: true },
     publicId: { type: String, required: true },
@@ -13,7 +14,8 @@ const imageSchema = new Schema(
 
 const blogSchema = new Schema<TBlog>(
   {
-    title: { type: String, required: true, unique: true, trim: true },
+    title: { type: String, required: true, trim: true },
+    slug: { type: String, trim: true, unique: true },
     metaDescription: { type: String, required: true, trim: true },
     content: { type: String, required: true },
     category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
@@ -34,6 +36,20 @@ blogSchema.statics.findBlogByTitle = async function (title: string) {
   if (!blog) throw new AppError(httpStatus.NOT_FOUND, "Blog with this title not found");
   return blog;
 };
+
+blogSchema.pre("save", function (next) {
+  this.slug = generateSlug(this.title);
+  next();
+});
+
+blogSchema.pre("findOneAndUpdate", async function (next) {
+	const update = this.getUpdate() as Partial<TBlog>;
+	if (update.title) {
+		update.slug = generateSlug(update.title);
+		this.setUpdate(update);
+	}
+	next();
+});
 
 const Blog = model<TBlog, BlogModel>("Blog", blogSchema);
 

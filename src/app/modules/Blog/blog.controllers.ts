@@ -23,9 +23,7 @@ const updateBlog: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const blogId = req.params.id;
     const updateData = req.body; 
-    const userRole = req.user.role; 
-
-    const updatedBlog = await BlogServices.updateBlog(blogId, updateData, userRole);
+    const updatedBlog = await BlogServices.updateBlog(blogId, updateData);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -87,9 +85,8 @@ const getBlog: RequestHandler = catchAsync(
 const deleteBlog: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const blogId = req.params.id;
-    const userRole = req.user.role; 
 
-    const result = await BlogServices.deleteBlog(blogId, userRole);
+    const result = await BlogServices.deleteBlog(blogId);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,

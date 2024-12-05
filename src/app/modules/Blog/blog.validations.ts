@@ -15,6 +15,8 @@ const createBlogValidation = z.object({
       })
       .min(10, {
         message: "Meta description must be at least 10 characters long!",
+      }).max(160, {
+        message: "Meta description must be at most 160 characters long!",
       }),
     content: z
       .string({
@@ -40,7 +42,6 @@ const createBlogValidation = z.object({
           message: "Invalid URL format!",
         }),
     }),
-    isArchived: z.boolean().optional(),
   }),
 });
 

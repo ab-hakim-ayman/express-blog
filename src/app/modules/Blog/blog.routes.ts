@@ -1,13 +1,14 @@
 import express from "express";
+import adminAuth from "../../middlewares/adminAuth";
 import validateRequest from "../../middlewares/validateRequest";
 import { BlogControllers } from "./blog.controllers";
 import BlogValidations from "./blog.validations";
-import adminAuth from "../../middlewares/adminAuth";
 
 const router = express.Router();
 
 router.post(
   "/create",
+  adminAuth("admin"),
   validateRequest(BlogValidations.createBlogValidation),
   BlogControllers.createBlog
 );

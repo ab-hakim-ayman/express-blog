@@ -9,6 +9,7 @@ export type TImage = {
 export interface TBlog {
   _id?: Types.ObjectId;
   title: string;
+  slug ?: string;
   metaDescription: string;
   content: string;
   category: Types.ObjectId;
