@@ -30,35 +30,37 @@ const updateComment: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 
-const getCommentsByBlogId: RequestHandler = catchAsync(async (req, res) => {
-  const { blogId } = req.params;
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 10;
-  const skip = (page - 1) * limit;
+const getCommentsByBlogId: RequestHandler = catchAsync(
+  async (req, res) => {
+    const { blogId } = req.params;
+    
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
 
-  const { comments, totalComments } = await CommentServices.getCommentsByBlogId(
-    blogId,
-    skip,
-    limit,
-  );
+    const { comments, meta } = await CommentServices.getCommentsByBlogId(
+      blogId,
+      skip,
+      limit
+    );
 
-  const totalPages = Math.ceil(totalComments / limit);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Comments retrieved successfully!",
-    data: {
-      comments,
-      pagination: {
-        totalComments,
-        totalPages,
-        currentPage: page,
-        limit,
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Comments retrieved successfully!",
+      data: {
+        comments,
+        pagination: {
+          totalComments: meta.total,  
+          totalPages: meta.totalPage,  
+          currentPage: page,  
+          limit,  
+        },
       },
-    },
-  });
-});
+    });
+  }
+);
+
 
 const deleteComment: RequestHandler = catchAsync(async (req, res) => {
   const commentId = req.params.id;

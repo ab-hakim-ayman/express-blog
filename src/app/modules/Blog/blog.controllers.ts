@@ -42,13 +42,11 @@ const getBlogs: RequestHandler = catchAsync(
     const limit = parseInt(req.query.limit as string) || 10;
     const skip = (page - 1) * limit;
 
-    const { blogs, totalBlogs } = await BlogServices.getBlogs(
+    const { blogs, meta } = await BlogServices.getBlogs(
       searchQuery,
       skip,
       limit,
     );
-
-    const totalPages = Math.ceil(totalBlogs / limit);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -57,15 +55,16 @@ const getBlogs: RequestHandler = catchAsync(
       data: {
         blogs,
         pagination: {
-          totalBlogs,
-          totalPages,
-          currentPage: page,
-          limit,
+          totalBlogs: meta.total, 
+          totalPages: meta.totalPage,  
+          currentPage: page,  
+          limit, 
         },
       },
     });
-  },
+  }
 );
+
 
 const getBlog: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {

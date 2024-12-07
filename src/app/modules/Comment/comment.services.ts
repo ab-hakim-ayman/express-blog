@@ -20,14 +20,16 @@ const updateComment = async (commentId: string, updateData: Partial<TComment>) =
 
 const getCommentsByBlogId = async (
   blogId: string,
-  skip = 0,
-  limit = 10
+  skip: number,
+  limit: number
 ) => {
-  const comments = await Comment.find({ blogId })
+  const queryCondition: Record<string, unknown> = { blogId };
+
+  const comments = await Comment.find(queryCondition)
     .skip(skip)
     .limit(limit);
 
-  const totalComments = await Comment.countDocuments({ blogId });
+  const totalComments = await Comment.countDocuments(queryCondition);
 
   const totalPage = Math.ceil(totalComments / limit);
   const page = Math.ceil(skip / limit) + 1;
@@ -38,10 +40,11 @@ const getCommentsByBlogId = async (
       limit,
       page,
       totalPage,
-      total: totalComments,
+      total: totalComments, 
     },
   };
 };
+
 
 
 const deleteComment = async (commentId: string) => {

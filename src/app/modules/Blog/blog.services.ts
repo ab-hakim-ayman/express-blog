@@ -36,11 +36,7 @@ const getBlogs = async (
   limit: number
 ) => {
   const queryCondition: Record<string, unknown> = {};
-  const { search, category } = searchQuery;
-
-  if (search) {
-    queryCondition.title = { $regex: search as string, $options: "i" };
-  }
+  const { category } = searchQuery; 
 
   if (category) {
     queryCondition.category = category;
@@ -49,13 +45,12 @@ const getBlogs = async (
   const blogs = await Blog.find(queryCondition)
     .skip(skip)
     .limit(limit)
-    .populate("category")
-    .lean();
+    .populate("category");
 
-  const totalDocuments = await Blog.countDocuments(queryCondition);
+  const totalBlogs = await Blog.countDocuments(queryCondition);
 
-  const totalPage = Math.ceil(totalDocuments / limit);
-  const page = Math.ceil(skip / limit) + 1;
+  const totalPage = Math.ceil(totalBlogs / limit);
+  const page = Math.ceil(skip / limit) + 1; 
 
   return {
     blogs,
@@ -63,10 +58,11 @@ const getBlogs = async (
       limit,
       page,
       totalPage,
-      total: totalDocuments,
+      total: totalBlogs, 
     },
   };
 };
+
 
 
 
