@@ -52,9 +52,20 @@ const getBlogs = async (
     .populate("category")
     .lean();
 
-  const totalBlogs = await Blog.countDocuments(queryCondition);
+  const totalDocuments = await Blog.countDocuments(queryCondition);
 
-  return { blogs, totalBlogs };
+  const totalPage = Math.ceil(totalDocuments / limit);
+  const page = Math.ceil(skip / limit) + 1;
+
+  return {
+    blogs,
+    meta: {
+      limit,
+      page,
+      totalPage,
+      total: totalDocuments,
+    },
+  };
 };
 
 
