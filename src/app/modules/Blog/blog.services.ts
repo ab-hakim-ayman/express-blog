@@ -56,6 +56,9 @@ const getBlogs = async (searchQuery: Record<string, unknown>, skip: number, limi
 const deleteBlog = async (blogId: string) => {
 	const deletedBlog = await Blog.findByIdAndDelete(blogId);
 
+	//! todo: delete all comments related to this blog
+	//! take inspiration from category delete method
+
 	if (!deletedBlog) {
 		throw new AppError(httpStatus.NOT_FOUND, 'Blog not found or not authorized!');
 	}

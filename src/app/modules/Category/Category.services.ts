@@ -1,6 +1,7 @@
 import httpStatus from 'http-status';
-import mongoose from 'mongoose';
 import AppError from '../../errors/AppError';
+import Blog from '../Blog/blog.model';
+import Comment from '../Comment/comment.model';
 import Category from './Category.model';
 import { TCategory } from './Category.types';
 
@@ -30,29 +31,36 @@ const UpdateCategoryById = async (id: string, data: Partial<TCategory>) => {
 	return category;
 };
 
-const DeleteCategoryById = async (id: string) => {
-	const session = await mongoose.startSession();
-	const category = await Category.findById(id);
-	if (!category) {
-		throw new AppError(httpStatus.NOT_FOUND, 'Category not found');
-	}
+const DeleteCategoryById = async (categoryId: string) => {
+	await GetCategoryById(categoryId);
+
+	const session = await Category.startSession();
 
 	try {
 		session.startTransaction();
 
-		// await Subcategory.deleteMany({ category: id }, { session });
-		const category = await Category.findByIdAndDelete(id, {
-			session
-		});
+		// Find and delete blogs related to the category
+		const blogs = await Blog.find({ category: categoryId }, { session });
+		const blogIds = blogs.map((blog) => blog._id); // Extract blog IDs
+
+		await Blog.deleteMany({ categoryId }, { session });
+
+		// Delete comments related to the blogs
+		if (blogIds.length > 0) {
+			await Comment.deleteMany({ blogId: { $in: blogIds } }, { session });
+		}
+
+		// Finally, delete the category
+		const category = await Category.findByIdAndDelete(categoryId, { session });
 
 		await session.commitTransaction();
-		await session.endSession();
+		session.endSession();
+
 		return category;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	} catch (error: any) {
 		await session.abortTransaction();
-		await session.endSession();
-		throw new Error(error);
+		session.endSession();
+		throw new Error(error.message || 'Failed to delete category and related data');
 	}
 };
 
