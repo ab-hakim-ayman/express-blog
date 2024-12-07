@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post('/', validateRequest(CommentValidation.createCommentValidation), CommentControllers.createComment);
 
-router.get('/:id', CommentControllers.getCommentsByBlogId);
+router.get('/:blogId', CommentControllers.getCommentsByBlogId);
 
 router.put(
 	'/:id',

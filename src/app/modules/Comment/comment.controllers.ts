@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
+import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
-import httpStatus from 'http-status';
 import { CommentServices } from './comment.services';
 
 const createComment: RequestHandler = catchAsync(async (req, res) => {
@@ -43,15 +43,8 @@ const getCommentsByBlogId: RequestHandler = catchAsync(async (req, res) => {
 		statusCode: httpStatus.OK,
 		success: true,
 		message: 'Comments retrieved successfully!',
-		data: {
-			comments,
-			pagination: {
-				totalComments: meta.total,
-				totalPages: meta.totalPage,
-				currentPage: page,
-				limit
-			}
-		}
+		meta,
+		data: comments
 	});
 });
 

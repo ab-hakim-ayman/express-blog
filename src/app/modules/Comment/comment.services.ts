@@ -25,7 +25,7 @@ const getCommentsByBlogId = async (blogId: string, skip: number, limit: number) 
 
 	const totalComments = await Comment.countDocuments(queryCondition);
 
-	const totalPage = Math.ceil(totalComments / limit);
+	const totalPages = Math.ceil(totalComments / limit);
 	const page = Math.ceil(skip / limit) + 1;
 
 	return {
@@ -33,8 +33,8 @@ const getCommentsByBlogId = async (blogId: string, skip: number, limit: number) 
 		meta: {
 			limit,
 			page,
-			totalPage,
-			total: totalComments
+			totalPages,
+			totalItems: totalComments
 		}
 	};
 };
