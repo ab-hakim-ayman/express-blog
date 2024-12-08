@@ -10,9 +10,22 @@ const CreateCategory = async (data: TCategory) => {
 	return category;
 };
 
-const GetCategories = async () => {
-	const categories = await Category.find();
-	return categories;
+const GetCategories = async (searchTerm: string, skip: number, limit: number) => {
+	const query = searchTerm ? { name: { $regex: searchTerm, $options: 'i' } } : {};
+	const categories = await Category.find(query).skip(skip).limit(limit);
+
+	const totalCategories = await Category.countDocuments(query);
+
+	const totalPages = Math.ceil(totalCategories / limit);
+	const page = Math.ceil(skip / limit) + 1;
+	const meta = {
+		limit,
+		page,
+		totalPages,
+		totalItems: totalCategories
+	};
+
+	return { meta, categories };
 };
 
 const GetCategoryById = async (id: string) => {
