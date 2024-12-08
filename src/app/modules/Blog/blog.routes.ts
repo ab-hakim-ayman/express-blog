@@ -17,6 +17,8 @@ router.get('/', BlogControllers.getBlogs);
 
 router.get('/:id', BlogControllers.getBlog);
 
+router.get('/slug/:slug', BlogControllers.getBlogBySlug);
+
 router.put(
 	'/:id',
 	adminAuth('admin'),
