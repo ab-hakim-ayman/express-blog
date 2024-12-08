@@ -7,7 +7,7 @@ const commentSchema = new Schema<TComment>(
 	{
 		name: { type: String, required: true, trim: true },
 		comment: { type: String, required: true },
-		blogId: { type: Schema.Types.ObjectId, ref: 'Blog', required: true }
+		blogId: { type: Schema.Types.ObjectId, ref: 'Blog', required: true } // This links to the Blog model
 	},
 	{ timestamps: true }
 );

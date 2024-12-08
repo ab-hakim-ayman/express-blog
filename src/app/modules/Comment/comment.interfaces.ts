@@ -1,15 +1,12 @@
 /* eslint-disable no-unused-vars */
-import { Model, Types } from 'mongoose';
+import { Document, Model, Types } from 'mongoose';
 
-export interface TComment {
-	_id?: Types.ObjectId;
+export interface TComment extends Document {
 	name: string;
 	comment: string;
-	blogId: Types.ObjectId;
-	createdAt?: Date;
-	updatedAt?: Date;
+	blogId: Types.ObjectId | string;
 }
 
 export interface CommentModel extends Model<TComment> {
-	isCommentExists(id: string | Types.ObjectId): Promise<TComment | null>;
+	isCommentExists(id: string): Promise<TComment>;
 }
