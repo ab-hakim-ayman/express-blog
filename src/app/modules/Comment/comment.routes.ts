@@ -9,7 +9,6 @@ const router = express.Router();
 
 router.post(
   "/",
-  adminAuth(),
   validateRequest(CommentValidation.createCommentValidation),
   CommentControllers.createComment,
 );
@@ -17,7 +16,6 @@ router.post(
 
 router.get(
   "/:id",
-  adminAuth(), 
   CommentControllers.getCommentsByBlogId,
 );
 

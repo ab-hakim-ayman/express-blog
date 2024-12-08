@@ -54,7 +54,7 @@ const getBlogs = async (
 
   return {
     blogs,
-    meta: {
+    pagination: {
       limit,
       page,
       totalPage,
