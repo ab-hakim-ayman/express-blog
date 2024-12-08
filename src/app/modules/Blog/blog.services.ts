@@ -1,8 +1,8 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
+import Comment from '../Comment/comment.model';
 import { TBlog } from './blog.interfaces';
 import Blog from './blog.model';
-import Comment from '../Comment/comment.model';
 
 const createBlog = async (blogData: Partial<TBlog>) => {
 	const blog = new Blog({ ...blogData });
@@ -12,6 +12,14 @@ const createBlog = async (blogData: Partial<TBlog>) => {
 
 const getBlogById = async (blogId: string) => {
 	const blog = await Blog.findById(blogId).populate('category');
+	if (!blog) {
+		throw new AppError(httpStatus.NOT_FOUND, 'Blog not found!');
+	}
+	return blog;
+};
+
+const getBlogBySlug = async (slug: string) => {
+	const blog = await Blog.findOne({ slug }).populate('category');
 	if (!blog) {
 		throw new AppError(httpStatus.NOT_FOUND, 'Blog not found!');
 	}
@@ -55,8 +63,8 @@ const getBlogs = async (searchQuery: Record<string, unknown>, skip: number, limi
 };
 
 const deleteBlog = async (blogId: string) => {
-	const session = await Blog.startSession(); 
-  
+	const session = await Blog.startSession();
+
 	try {
 		session.startTransaction();
 
@@ -66,16 +74,16 @@ const deleteBlog = async (blogId: string) => {
 			throw new AppError(httpStatus.NOT_FOUND, 'Blog not found or not authorized!');
 		}
 
-		await Comment.deleteMany({ blogId: blogId }, { session }); 
-  
+		await Comment.deleteMany({ blogId: blogId }, { session });
+
 		await Blog.findByIdAndDelete(blogId).session(session);
-  
+
 		await session.commitTransaction();
 		session.endSession();
-  
+
 		return blog;
 	} catch (error: any) {
-		await session.abortTransaction(); 
+		await session.abortTransaction();
 		session.endSession();
 		throw new Error(error.message || 'Failed to delete blog and related comments');
 	}
@@ -86,5 +94,6 @@ export const BlogServices = {
 	updateBlog,
 	getBlogs,
 	getBlogById,
+	getBlogBySlug,
 	deleteBlog
 };
