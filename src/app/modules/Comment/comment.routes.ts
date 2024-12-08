@@ -1,36 +1,23 @@
-import express from "express";
-
-import adminAuth from "../../middlewares/adminAuth";
-import validateRequest from "../../middlewares/validateRequest";
-import CommentControllers from "./comment.controllers";
-import CommentValidation from "./comment.validations";
+import express from 'express';
+import adminAuth from '../../middlewares/adminAuth';
+import validateRequest from '../../middlewares/validateRequest';
+import CommentControllers from './comment.controllers';
+import CommentValidation from './comment.validations';
 
 const router = express.Router();
 
-router.post(
-  "/",
-  validateRequest(CommentValidation.createCommentValidation),
-  CommentControllers.createComment,
-);
+router.post('/', validateRequest(CommentValidation.createCommentValidation), CommentControllers.createComment);
 
-
-router.get(
-  "/:id",
-  CommentControllers.getCommentsByBlogId,
-);
+router.get('/:blogId', CommentControllers.getCommentsByBlogId);
 
 router.put(
-  "/:id",
-  adminAuth("admin"),
-  validateRequest(CommentValidation.updateCommentValidation),
-  CommentControllers.updateComment,
+	'/:id',
+	adminAuth(),
+	validateRequest(CommentValidation.updateCommentValidation),
+	CommentControllers.updateComment
 );
 
-router.delete(
-  "/:id",
-  adminAuth("admin"),
-  CommentControllers.deleteComment,
-);
+router.delete('/:id', adminAuth(), CommentControllers.deleteComment);
 
 const CommentRoutes = router;
 
