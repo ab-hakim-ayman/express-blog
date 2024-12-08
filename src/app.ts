@@ -5,11 +5,10 @@ import notFound from './app/middlewares/notFound';
 import router from './app/routes';
 const app: Application = express();
 
-// parsers
 app.use(express.json());
 app.use(
 	cors({
-		origin: ['http://localhost:5173'],
+		origin: ['http://localhost:3000', 'https://aic-blog-client.vercel.app', 'https://aic-blog-dashboard.vercel.app'],
 		credentials: true
 	})
 );
