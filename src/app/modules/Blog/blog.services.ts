@@ -2,6 +2,7 @@ import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
 import { TBlog } from './blog.interfaces';
 import Blog from './blog.model';
+import Comment from '../Comment/comment.model';
 
 const createBlog = async (blogData: Partial<TBlog>) => {
 	const blog = new Blog({ ...blogData });
@@ -54,16 +55,30 @@ const getBlogs = async (searchQuery: Record<string, unknown>, skip: number, limi
 };
 
 const deleteBlog = async (blogId: string) => {
-	const deletedBlog = await Blog.findByIdAndDelete(blogId);
+	const session = await Blog.startSession(); 
+  
+	try {
+		session.startTransaction();
 
-	//! todo: delete all comments related to this blog
-	//! take inspiration from category delete method
+		const blog = await Blog.findById(blogId).session(session);
 
-	if (!deletedBlog) {
-		throw new AppError(httpStatus.NOT_FOUND, 'Blog not found or not authorized!');
+		if (!blog) {
+			throw new AppError(httpStatus.NOT_FOUND, 'Blog not found or not authorized!');
+		}
+
+		await Comment.deleteMany({ blogId: blogId }, { session }); 
+  
+		await Blog.findByIdAndDelete(blogId).session(session);
+  
+		await session.commitTransaction();
+		session.endSession();
+  
+		return blog;
+	} catch (error: any) {
+		await session.abortTransaction(); 
+		session.endSession();
+		throw new Error(error.message || 'Failed to delete blog and related comments');
 	}
-
-	return deletedBlog;
 };
 
 export const BlogServices = {
