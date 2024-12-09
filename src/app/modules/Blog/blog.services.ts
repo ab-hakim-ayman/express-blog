@@ -66,26 +66,34 @@ const deleteBlog = async (blogId: string) => {
 	const session = await Blog.startSession();
 
 	try {
+		// Start transaction
 		session.startTransaction();
 
+		// Find the blog with the session
 		const blog = await Blog.findById(blogId).session(session);
 
 		if (!blog) {
 			throw new AppError(httpStatus.NOT_FOUND, 'Blog not found or not authorized!');
 		}
 
-		await Comment.deleteMany({ blogId: blogId }, { session });
+		// Delete related comments with the session
+		await Comment.deleteMany({ blogId }).session(session);
 
+		// Delete the blog itself
 		await Blog.findByIdAndDelete(blogId).session(session);
 
+		// Commit transaction
 		await session.commitTransaction();
 		session.endSession();
 
 		return blog;
 	} catch (error: any) {
+		// Rollback transaction on error
 		await session.abortTransaction();
 		session.endSession();
-		throw new Error(error.message || 'Failed to delete blog and related comments');
+
+		// Re-throw error
+		throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, error.message ?? 'An error occurred while deleting the blog!');
 	}
 };
 
