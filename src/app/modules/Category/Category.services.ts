@@ -45,6 +45,7 @@ const UpdateCategoryById = async (id: string, data: Partial<TCategory>) => {
 };
 
 const DeleteCategoryById = async (categoryId: string) => {
+	// Ensure the category exists before attempting deletion
 	await GetCategoryById(categoryId);
 
 	const session = await Category.startSession();
@@ -52,28 +53,35 @@ const DeleteCategoryById = async (categoryId: string) => {
 	try {
 		session.startTransaction();
 
-		// Find and delete blogs related to the category
-		const blogs = await Blog.find({ category: categoryId }, { session });
+		// Find blogs related to the category
+		const blogs = await Blog.find({ category: categoryId }).session(session);
 		const blogIds = blogs.map((blog) => blog._id); // Extract blog IDs
 
-		await Blog.deleteMany({ categoryId }, { session });
+		// Delete blogs related to the category
+		await Blog.deleteMany({ category: categoryId }).session(session);
 
 		// Delete comments related to the blogs
 		if (blogIds.length > 0) {
-			await Comment.deleteMany({ blogId: { $in: blogIds } }, { session });
+			await Comment.deleteMany({ blogId: { $in: blogIds } }).session(session);
 		}
 
 		// Finally, delete the category
-		const category = await Category.findByIdAndDelete(categoryId, { session });
+		const category = await Category.findByIdAndDelete(categoryId).session(session);
 
+		// Commit the transaction
 		await session.commitTransaction();
 		session.endSession();
 
 		return category;
 	} catch (error: any) {
+		// Roll back the transaction
 		await session.abortTransaction();
 		session.endSession();
-		throw new Error(error.message || 'Failed to delete category and related data');
+
+		throw new AppError(
+			httpStatus.INTERNAL_SERVER_ERROR,
+			error.message ?? 'An error occurred while deleting the category'
+		);
 	}
 };
 
