@@ -1,5 +1,6 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
+import Category from '../Category/Category.model';
 import Comment from '../Comment/comment.model';
 import { TBlog } from './blog.interfaces';
 import Blog from './blog.model';
@@ -38,10 +39,21 @@ const updateBlog = async (blogId: string, updateData: Partial<TBlog>) => {
 
 const getBlogs = async (searchQuery: Record<string, unknown>, skip: number, limit: number) => {
 	const queryCondition: Record<string, unknown> = {};
-	const { category } = searchQuery;
+	const { category, search } = searchQuery;
 
 	if (category) {
-		queryCondition.category = category;
+		const categoryData = await Category.findOne({ slug: category });
+		if (categoryData) {
+			queryCondition.category = categoryData._id;
+		}
+	}
+
+	if (search) {
+		queryCondition.$or = [
+			{ title: { $regex: search, $options: 'i' } },
+			{ metaDescription: { $regex: search, $options: 'i' } },
+			{ content: { $regex: search, $options: 'i' } }
+		];
 	}
 
 	const blogs = await Blog.find(queryCondition).skip(skip).limit(limit).populate('category');
