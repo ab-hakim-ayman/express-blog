@@ -1,9 +1,14 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
+import Blog from '../Blog/blog.model';
 import { TComment } from './comment.interfaces';
 import Comment from './comment.model';
 
 const createComment = async (commentData: Partial<TComment>) => {
+	// check if the blog exists
+	const blog = await Blog.findById(commentData.blogId);
+	if (!blog) throw new AppError(httpStatus.NOT_FOUND, 'Blog not found!');
+
 	const comment = new Comment(commentData);
 	await comment.save();
 	return comment;

@@ -5,6 +5,8 @@ export interface TComment extends Document {
 	name: string;
 	comment: string;
 	blogId: Types.ObjectId | string;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 export interface CommentModel extends Model<TComment> {
