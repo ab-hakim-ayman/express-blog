@@ -56,7 +56,7 @@ const getBlogs = async (searchQuery: Record<string, unknown>, skip: number, limi
 		];
 	}
 
-	const blogs = await Blog.find(queryCondition).skip(skip).limit(limit).populate('category');
+	const blogs = await Blog.find(queryCondition).skip(skip).limit(limit).populate('category').sort({ createdAt: -1 });
 
 	const totalBlogs = await Blog.countDocuments(queryCondition);
 
