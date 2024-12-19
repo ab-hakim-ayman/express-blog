@@ -3,6 +3,7 @@ import adminRouters from '../modules/Admin/admin.routes';
 import BlogRoutes from '../modules/Blog/blog.routes';
 import CategoryRoutes from '../modules/Category/Category.routes';
 import CommentRoutes from '../modules/Comment/comment.routes';
+import SystemRoutes from '../modules/system/system.routes';
 
 const router = express.Router();
 
@@ -22,6 +23,10 @@ const moduleRoutes = [
 	{
 		path: '/comments',
 		route: CommentRoutes
+	},
+	{
+		path: '/system',
+		route: SystemRoutes
 	}
 ];
 
