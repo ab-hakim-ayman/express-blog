@@ -26,7 +26,7 @@ const updateComment = async (commentId: string, updateData: Partial<TComment>) =
 const getCommentsByBlogId = async (blogId: string, skip: number, limit: number) => {
 	const queryCondition: Record<string, unknown> = { blogId };
 
-	const comments = await Comment.find(queryCondition).skip(skip).limit(limit);
+	const comments = await Comment.find(queryCondition).skip(skip).limit(limit).sort({ createdAt: -1 });
 
 	const totalComments = await Comment.countDocuments(queryCondition);
 
