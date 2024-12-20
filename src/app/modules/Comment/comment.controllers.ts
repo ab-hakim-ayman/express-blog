@@ -34,7 +34,7 @@ const getCommentsByBlogId: RequestHandler = catchAsync(async (req, res) => {
 	const { blogId } = req.params;
 
 	const page = parseInt(req.query.page as string) || 1;
-	const limit = parseInt(req.query.limit as string) || 10;
+	const limit = parseInt(req.query.limit as string) || 100;
 	const skip = (page - 1) * limit;
 
 	const { comments, meta } = await CommentServices.getCommentsByBlogId(blogId, skip, limit);

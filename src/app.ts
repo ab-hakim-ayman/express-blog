@@ -8,7 +8,13 @@ const app: Application = express();
 app.use(express.json());
 app.use(
 	cors({
-		origin: ['http://localhost:3000', 'https://aic-blog-client.vercel.app', 'https://aic-blog-dashboard.vercel.app'],
+		origin: [
+			'http://localhost:3000',
+			'https://aic-blog-client.vercel.app',
+			'https://aic-blog-dashboard.vercel.app',
+			'https://careerpreparationbd.com',
+			'https://dashboard.careerpreparationbd.com'
+		],
 		credentials: true
 	})
 );

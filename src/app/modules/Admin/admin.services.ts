@@ -15,6 +15,7 @@ const loginAdmin = async (payload: { email: string; password: string }) => {
 
 	// check if the password is correct
 	const isPasswordMatch = await Admin.isPasswordMatched(password, admin?.password);
+	console.log({ isPasswordMatch });
 
 	if (!isPasswordMatch) {
 		throw new AppError(httpStatus.FORBIDDEN, 'Invalid credentials');
