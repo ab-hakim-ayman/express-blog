@@ -12,8 +12,8 @@ app.use(
 			'http://localhost:3000',
 			'https://aic-blog-client.vercel.app',
 			'https://aic-blog-dashboard.vercel.app',
-			'https://careerpreparationbd.com',
-			'https://dashboard.careerpreparationbd.com'
+			'https://preparationacademybd.com',
+			'https://dashboard.preparationacademybd.com'
 		],
 		credentials: true
 	})
