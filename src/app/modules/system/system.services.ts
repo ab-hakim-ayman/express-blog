@@ -1,3 +1,4 @@
+import deleteCloudinaryImage from '../../utils/deleteCloudinaryImage';
 import Blog from '../Blog/blog.model';
 import Category from '../Category/Category.model';
 import Comment from '../Comment/comment.model';
@@ -14,6 +15,12 @@ const DashboardStates = async () => {
 	};
 };
 
+const deleteImage = async (publicId: string) => {
+	const res = await deleteCloudinaryImage(publicId);
+	return res;
+};
+
 export const SystemServices = {
-	DashboardStates
+	DashboardStates,
+	deleteImage
 };
