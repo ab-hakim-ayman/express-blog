@@ -1,5 +1,6 @@
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
+import deleteCloudinaryImage from '../../utils/deleteCloudinaryImage';
 import Category from '../Category/Category.model';
 import Comment from '../Comment/comment.model';
 import { TBlog } from './blog.interfaces';
@@ -93,6 +94,8 @@ const deleteBlog = async (blogId: string) => {
 
 		// Delete the blog itself
 		await Blog.findByIdAndDelete(blogId).session(session);
+
+		await deleteCloudinaryImage(blog?.image?.publicId as string);
 
 		// Commit transaction
 		await session.commitTransaction();
