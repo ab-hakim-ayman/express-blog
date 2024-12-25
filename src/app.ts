@@ -11,6 +11,7 @@ app.use(
 		origin: [
 			'http://localhost:3000',
 			'https://aic-blog-client.vercel.app',
+			'https://express-blog-tau.vercel.app/',
 			'https://aic-blog-dashboard.vercel.app',
 			'https://preparationacademybd.com',
 			'https://dashboard.preparationacademybd.com'
