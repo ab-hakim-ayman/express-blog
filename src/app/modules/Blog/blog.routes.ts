@@ -6,12 +6,7 @@ import BlogValidations from './blog.validations';
 
 const router = express.Router();
 
-router.post(
-	'/create',
-	adminAuth('admin'),
-	validateRequest(BlogValidations.createBlogValidation),
-	BlogControllers.createBlog
-);
+router.post('/create', validateRequest(BlogValidations.createBlogValidation), BlogControllers.createBlog);
 
 router.get('/', BlogControllers.getBlogs);
 
